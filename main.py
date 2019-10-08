@@ -3,6 +3,7 @@ import time
 import telepot
 from web3 import Web3
 from telepot.loop import MessageLoop
+import json
 from telepot.namedtuple import KeyboardButton,ReplyKeyboardMarkup
 markup = ReplyKeyboardMarkup(keyboard=[
                                     [KeyboardButton(text="Deposite"), KeyboardButton(text='Check Balance'),KeyboardButton(text="withdrawl")],
@@ -70,8 +71,6 @@ def getBalance(msg):
     account="0x719506f109df260057De122614d537176925e2e2"
     print(web3.isConnected())
     balance =web3.fromWei(web3.eth.getBalance(account),'ether')
-    
-
 
 def withdrawl(msg):
     print("withdrawl called, is connected ")
@@ -80,12 +79,18 @@ def withdrawl(msg):
 def sendTip(msg):
     print("sending tips,is connected ")
     print(web3.isConnected())
-    
+
 TOKEN=os.environ.get('BOT_TOKEN')
 infura_url=os.environ.get('ROPSTEN_URL')
-web3 = Web3(Web3.HTTPProvider(infura_url))
-
 bot = telepot.Bot(TOKEN)
+web3 = Web3(Web3.HTTPProvider(infura_url))
+with open("./build/contract_abi.json") as f:
+    info_json = json.load(f)
+abi = info_json
+with open("./build/contract_bytecode.json") as f:
+    info_json = json.load(f)
+bytecode = info_json
+contract_adress=os.environ.get("CONTRACT_ADDRESS")
 MessageLoop(bot, handle).run_as_thread()
 print ('Listening ...')
 # Keep the program running.
